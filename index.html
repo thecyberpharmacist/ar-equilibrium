@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Book AR Experience</title>
+    
+    <!-- Import A-Frame and MindAR libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        .example-container {
+            overflow: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        #start-button {
+            padding: 12px 24px;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .instructions {
+            max-width: 80%;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading/start screen -->
+    <div id="loading-screen">
+        <h1 align="center">AR Experience of a Patient-Created Superhero of Medication Lived Experience</h1>
+        <p class="instructions">Point your camera at the <i>Superhero Character Image</i> to see it come to life!</p>
+        <p class="instructions">Make sure the entire image is visible in your camera view.</p>
+        <button id="start-button">Start AR Experience</button>
+    </div>
+
+    <!-- AR scene container -->
+    <div class="example-container">
+        <a-scene 
+            mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: true;" 
+            embedded 
+            color-space="sRGB" 
+            renderer="colorManagement: true, physicallyCorrectLights" 
+            vr-mode-ui="enabled: false" 
+            device-orientation-permission-ui="enabled: false"
+        >
+            <a-assets>
+                <video id="ar-video" src="./your-video.mp4" preload="auto" loop playsinline crossorigin="anonymous"></video>
+            </a-assets>
+
+            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+            <a-entity mindar-image-target="targetIndex: 0">
+                <!-- Video plane that will appear when the target is detected -->
+                <a-video 
+                    src="#ar-video" 
+                    position="0 0 0" 
+                    height="1" 
+                    width="1.78" 
+                    rotation="0 0 0"
+                ></a-video>
+            </a-entity>
+        </a-scene>
+    </div>
+
+    <script>
+        const startButton = document.getElementById('start-button');
+        const loadingScreen = document.getElementById('loading-screen');
+        const sceneEl = document.querySelector('a-scene');
+        const video = document.getElementById('ar-video');
+
+        // Start experience when button is clicked
+        startButton.addEventListener('click', function() {
+            loadingScreen.style.display = 'none';
+            // Start AR experience
+            const arSystem = sceneEl.systems["mindar-image-system"];
+            arSystem.start();
+        });
+
+        // Event listener for when target is found
+        const targetEntity = document.querySelector('[mindar-image-target]');
+        targetEntity.addEventListener("targetFound", event => {
+            console.log("Target found");
+            // Play video when target is found
+            video.play().catch(error => {
+                console.error("Video play failed:", error);
+                // Try playing again with user interaction
+                document.addEventListener('click', function playVideoOnClick() {
+                    video.play();
+                    document.removeEventListener('click', playVideoOnClick);
+                }, { once: true });
+            });
+        });
+
+        // Event listener for when target is lost
+        targetEntity.addEventListener("targetLost", event => {
+            console.log("Target lost");
+            // Optionally pause video when target is lost
+            // video.pause();
+        });
+    </script>
+</body>
+</html>
