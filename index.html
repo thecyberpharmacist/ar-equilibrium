@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>The Cyberpharmacy Futurist: AR Experience of Patient's Medication Lived Experience</title>
+    <title>The Cyberpharmacy Futurist AR Experience</title>
     
     <!-- Import A-Frame and MindAR libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
@@ -37,24 +37,22 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 0 20px;
-            box-sizing: border-box;
         }
         #content-container {
             background-color: rgba(0, 0, 0, 0.6);
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
-            padding: 20px;
-            width: 85%;
-            max-width: 500px;
+            padding: 25px;
+            max-width: 90%;
             margin: 0 auto;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            box-sizing: border-box;
         }
         #loading-screen h1 {
             margin-bottom: 20px;
-            font-size: 22px;
+            font-size: 24px;
             line-height: 1.4;
-            padding: 0;
+            max-width: 100%;
+            padding: 0 10px;
         }
         #start-button {
             padding: 12px 24px;
@@ -73,73 +71,23 @@
             transform: translateY(-2px);
         }
         .instructions {
-            width: 100%;
+            max-width: 90%;
             text-align: center;
             margin-bottom: 15px;
             font-size: 16px;
             line-height: 1.5;
-        }
-        /* Debug overlay - hidden by default */
-        #debug-overlay {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 12px;
-            z-index: 1000;
-            width: 100%;
-            box-sizing: border-box;
-            display: none;
-        }
-        .status-message {
-            margin: 5px 0;
-        }
-        #manual-play-button {
-            padding: 10px 20px;
-            background-color: #ff4081;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-top: 15px;
-            cursor: pointer;
-            display: none;
-        }
-        #user-message {
-            margin-top: 15px;
-            font-style: italic;
-            display: none;
+            padding: 0 5px;
         }
         /* Media queries for different screen sizes */
         @media (max-width: 480px) {
             #content-container {
-                padding: 15px;
-                width: 92%;
+                padding: 20px 15px;
             }
             #loading-screen h1 {
-                font-size: 18px;
+                font-size: 20px;
             }
             .instructions {
                 font-size: 14px;
-            }
-        }
-        @media (max-width: 320px) {
-            #content-container {
-                padding: 12px;
-                width: 95%;
-            }
-            #loading-screen h1 {
-                font-size: 16px;
-            }
-            .instructions {
-                font-size: 12px;
-            }
-            #start-button {
-                padding: 10px 20px;
-                font-size: 16px;
             }
         }
     </style>
@@ -149,27 +97,16 @@
     <div id="loading-screen">
         <div id="content-container">
             <h1>AR Experience of a Patient-Created Superhero of Medication Lived Experience</h1>
-            <p class="instructions">Point your camera at the Superhero Character Image to see it come to life!</p>
+            <p class="instructions">Point your camera at the <i>Superhero Character Image</i> to see it come to life!</p>
             <p class="instructions">Make sure the entire image is visible in your camera view.</p>
             <button id="start-button">Start AR Experience</button>
-            <p id="user-message"></p>
-            <button id="manual-play-button">Tap to Play Video</button>
         </div>
-    </div>
-
-    <!-- Debug overlay (hidden by default, triple-tap to show) -->
-    <div id="debug-overlay">
-        <div class="status-message" id="status-ar">AR System: Waiting to start</div>
-        <div class="status-message" id="status-camera">Camera: Waiting for permission</div>
-        <div class="status-message" id="status-target">Target: Not found</div>
-        <div class="status-message" id="status-video">Video: Not playing</div>
-        <div class="status-message" id="status-mind">Mind file: Not checked</div>
     </div>
 
     <!-- AR scene container -->
     <div class="example-container">
         <a-scene 
-            mindar-image="imageTargetSrc: ./MAGIC-Equilibrium-Targets.mind; autoStart: false; uiScanning: true; warmupTolerance: 7; missTolerance: 12; filterMinCF: 0.0001; filterBeta: 0.001;" 
+            mindar-image="imageTargetSrc: ./MAGIC-Equilibrium-Targets.mind; autoStart: false; uiScanning: true;" 
             embedded 
             color-space="sRGB" 
             renderer="colorManagement: true, physicallyCorrectLights" 
@@ -177,13 +114,13 @@
             device-orientation-permission-ui="enabled: false"
         >
             <a-assets>
-                <video id="ar-video" src="./MAGIC-Video_Equilibrium.mp4" preload="auto" loop playsinline muted crossorigin="anonymous"></video>
+                <video id="ar-video" src="./MAGIC-Video_Equilibrium.mp4" preload="auto" loop playsinline crossorigin="anonymous"></video>
             </a-assets>
 
             <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
             <a-entity mindar-image-target="targetIndex: 0">
-                <!-- Video plane that will appear when the target is detected - adjusted for portrait video -->
+                <!-- Video plane that will appear when the target is detected -->
                 <a-video 
                     src="#ar-video" 
                     position="0 0 0" 
@@ -196,162 +133,40 @@
     </div>
 
     <script>
-        // DOM elements
         const startButton = document.getElementById('start-button');
-        const manualPlayButton = document.getElementById('manual-play-button');
         const loadingScreen = document.getElementById('loading-screen');
-        const userMessage = document.getElementById('user-message');
         const sceneEl = document.querySelector('a-scene');
         const video = document.getElementById('ar-video');
-        const debugOverlay = document.getElementById('debug-overlay');
-        const statusAR = document.getElementById('status-ar');
-        const statusCamera = document.getElementById('status-camera');
-        const statusTarget = document.getElementById('status-target');
-        const statusVideo = document.getElementById('status-video');
-        const statusMind = document.getElementById('status-mind');
-        
-        // Secret debug mode - triple-tap to activate
-        let tapCount = 0;
-        let lastTap = 0;
-        document.addEventListener('click', function() {
-            const now = new Date().getTime();
-            const timeDiff = now - lastTap;
-            if (timeDiff < 500 && tapCount < 2) {
-                tapCount++;
-            } else {
-                tapCount = 1;
-            }
-            lastTap = now;
-            
-            if (tapCount === 3) {
-                debugOverlay.style.display = debugOverlay.style.display === 'none' ? 'block' : 'none';
-                tapCount = 0;
-            }
-        });
-
-        // Check if mind file exists and can be loaded (silent check)
-        fetch('./MAGIC-Equilibrium-Targets.mind')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                statusMind.textContent = "Mind file: Successfully loaded";
-                return response.blob();
-            })
-            .catch(error => {
-                console.error('Error loading mind file:', error);
-                statusMind.textContent = `Mind file: Error - ${error.message}`;
-            });
 
         // Start experience when button is clicked
         startButton.addEventListener('click', function() {
-            statusAR.textContent = "AR System: Starting...";
-            
-            // Request camera permission first
-            navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}, audio: false})
-                .then(stream => {
-                    statusCamera.textContent = "Camera: Access granted";
-                    
-                    // Start AR after camera permission
-                    try {
-                        loadingScreen.style.display = 'none';
-                        const arSystem = sceneEl.systems["mindar-image-system"];
-                        arSystem.start();
-                    } catch (err) {
-                        console.error('Error starting AR:', err);
-                        loadingScreen.style.display = 'flex';
-                        userMessage.textContent = "Unable to start AR experience. Please try again.";
-                        userMessage.style.display = 'block';
-                        statusAR.textContent = `AR System: Start error - ${err.message}`;
-                    }
-                })
-                .catch(err => {
-                    console.error('Camera permission error:', err);
-                    statusCamera.textContent = `Camera: Error - ${err.message}`;
-                    userMessage.textContent = "Please allow camera access to use this AR experience.";
-                    userMessage.style.display = 'block';
-                });
-        });
-
-        // Manual video play button (fallback)
-        manualPlayButton.addEventListener('click', function() {
-            video.muted = false;
-            video.play().then(() => {
-                statusVideo.textContent = "Video: Playing (manual)";
-                manualPlayButton.style.display = 'none';
-                loadingScreen.style.display = 'none';
-            }).catch(err => {
-                statusVideo.textContent = `Video: Manual play error - ${err.message}`;
-                userMessage.textContent = "Unable to play video. Please try again.";
-                userMessage.style.display = 'block';
-            });
-        });
-
-        // Get AR system for debugging
-        const arSystem = sceneEl.systems["mindar-image-system"];
-        
-        // AR system event listeners (for debugging panel)
-        arSystem.addEventListener("initialized", () => {
-            console.log("AR initialized");
-            statusAR.textContent = "AR System: Initialized";
-        });
-
-        arSystem.addEventListener("start", () => {
-            console.log("AR started");
-            statusAR.textContent = "AR System: Started";
-        });
-
-        arSystem.addEventListener("stopped", () => {
-            console.log("AR stopped");
-            statusAR.textContent = "AR System: Stopped";
+            loadingScreen.style.display = 'none';
+            // Start AR experience
+            const arSystem = sceneEl.systems["mindar-image-system"];
+            arSystem.start();
         });
 
         // Event listener for when target is found
         const targetEntity = document.querySelector('[mindar-image-target]');
         targetEntity.addEventListener("targetFound", event => {
             console.log("Target found");
-            statusTarget.textContent = "Target: Found!";
-            
             // Play video when target is found
-            video.muted = true; // Start muted to help with autoplay
-            video.play().then(() => {
-                console.log("Video playing");
-                statusVideo.textContent = "Video: Playing (muted)";
-                
-                // Try to unmute after short delay
-                setTimeout(() => {
-                    video.muted = false;
-                    statusVideo.textContent = "Video: Playing (unmuted)";
-                }, 1000);
-            }).catch(error => {
+            video.play().catch(error => {
                 console.error("Video play failed:", error);
-                statusVideo.textContent = `Video: Play failed - ${error.message}`;
-                
-                // Show manual play button as fallback
-                loadingScreen.style.display = 'flex';
-                userMessage.textContent = "Tap the button below to play the video";
-                userMessage.style.display = 'block';
-                manualPlayButton.style.display = 'block';
+                // Try playing again with user interaction
+                document.addEventListener('click', function playVideoOnClick() {
+                    video.play();
+                    document.removeEventListener('click', playVideoOnClick);
+                }, { once: true });
             });
         });
 
         // Event listener for when target is lost
         targetEntity.addEventListener("targetLost", event => {
             console.log("Target lost");
-            statusTarget.textContent = "Target: Lost";
+            // Optionally pause video when target is lost
+            // video.pause();
         });
-
-        // Timer to check if target was found within reasonable time
-        let targetFoundTimer = setTimeout(() => {
-            if (statusTarget.textContent === "Target: Not found") {
-                // Only show this if the AR has started but no target found after 15 seconds
-                if (statusAR.textContent === "AR System: Started") {
-                    loadingScreen.style.display = 'flex';
-                    userMessage.textContent = "Having trouble finding the image? Make sure the entire image is visible and well-lit.";
-                    userMessage.style.display = 'block';
-                }
-            }
-        }, 15000);
     </script>
 </body>
 </html>
