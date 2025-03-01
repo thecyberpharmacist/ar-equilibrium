@@ -37,15 +37,18 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 0 20px;
+            box-sizing: border-box;
         }
         #content-container {
             background-color: rgba(0, 0, 0, 0.6);
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             padding: 25px;
-            max-width: 90%;
+            width: 85%;
+            max-width: 500px;
             margin: 0 auto;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
         }
         #loading-screen h1 {
             margin-bottom: 20px;
@@ -71,23 +74,55 @@
             transform: translateY(-2px);
         }
         .instructions {
-            max-width: 90%;
+            width: 100%;
             text-align: center;
             margin-bottom: 15px;
             font-size: 16px;
             line-height: 1.5;
             padding: 0 5px;
         }
+        /* Video control buttons */
+        #video-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: none;
+        }
+        .control-button {
+            padding: 10px 15px;
+            margin: 0 5px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 1px solid white;
+            color: white;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
         /* Media queries for different screen sizes */
         @media (max-width: 480px) {
             #content-container {
                 padding: 20px 15px;
+                width: 92%;
             }
             #loading-screen h1 {
                 font-size: 20px;
             }
             .instructions {
                 font-size: 14px;
+            }
+        }
+        @media (max-width: 320px) {
+            #content-container {
+                padding: 15px 10px;
+                width: 95%;
+            }
+            #loading-screen h1 {
+                font-size: 18px;
+            }
+            .instructions {
+                font-size: 13px;
             }
         }
     </style>
@@ -103,10 +138,16 @@
         </div>
     </div>
 
+    <!-- Video control buttons -->
+    <div id="video-controls">
+        <button id="pause-button" class="control-button">Pause</button>
+        <button id="play-button" class="control-button" style="display: none;">Play</button>
+    </div>
+
     <!-- AR scene container -->
     <div class="example-container">
         <a-scene 
-            mindar-image="imageTargetSrc: ./MAGIC-Equilibrium-Targets.mind; autoStart: false; uiScanning: true;" 
+            mindar-image="imageTargetSrc: ./MAGIC-Equilibrium-Targets.mind; autoStart: false; uiScanning: true; warmupTolerance: 5; missTolerance: 10; filterMinCF: 0.001; filterBeta: 0.01;" 
             embedded 
             color-space="sRGB" 
             renderer="colorManagement: true, physicallyCorrectLights" 
@@ -137,6 +178,9 @@
         const loadingScreen = document.getElementById('loading-screen');
         const sceneEl = document.querySelector('a-scene');
         const video = document.getElementById('ar-video');
+        const videoControls = document.getElementById('video-controls');
+        const pauseButton = document.getElementById('pause-button');
+        const playButton = document.getElementById('play-button');
 
         // Start experience when button is clicked
         startButton.addEventListener('click', function() {
@@ -150,6 +194,9 @@
         const targetEntity = document.querySelector('[mindar-image-target]');
         targetEntity.addEventListener("targetFound", event => {
             console.log("Target found");
+            // Show video controls
+            videoControls.style.display = 'block';
+            
             // Play video when target is found
             video.play().catch(error => {
                 console.error("Video play failed:", error);
@@ -164,8 +211,24 @@
         // Event listener for when target is lost
         targetEntity.addEventListener("targetLost", event => {
             console.log("Target lost");
+            // Hide video controls when target is lost
+            videoControls.style.display = 'none';
             // Optionally pause video when target is lost
             // video.pause();
+        });
+
+        // Pause button functionality
+        pauseButton.addEventListener('click', function() {
+            video.pause();
+            pauseButton.style.display = 'none';
+            playButton.style.display = 'inline-block';
+        });
+
+        // Play button functionality
+        playButton.addEventListener('click', function() {
+            video.play();
+            playButton.style.display = 'none';
+            pauseButton.style.display = 'inline-block';
         });
     </script>
 </body>
