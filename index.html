@@ -35,6 +35,24 @@
             z-index: 999;
             color: white;
             font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 0 20px;
+        }
+        #content-container {
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 90%;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        #loading-screen h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            line-height: 1.4;
+            max-width: 100%;
+            padding: 0 10px;
         }
         #start-button {
             padding: 12px 24px;
@@ -45,27 +63,50 @@
             font-size: 18px;
             cursor: pointer;
             margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        #start-button:hover {
+            background-color: #3b78e7;
+            transform: translateY(-2px);
         }
         .instructions {
-            max-width: 80%;
+            max-width: 90%;
             text-align: center;
             margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.5;
+            padding: 0 5px;
+        }
+        /* Media queries for different screen sizes */
+        @media (max-width: 480px) {
+            #content-container {
+                padding: 20px 15px;
+            }
+            #loading-screen h1 {
+                font-size: 20px;
+            }
+            .instructions {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Loading/start screen -->
     <div id="loading-screen">
-        <h1 align="center">AR Experience of a Patient-Created Superhero of Medication Lived Experience</h1>
-        <p class="instructions">Point your camera at the <i>Superhero Character Image</i> to see it come to life!</p>
-        <p class="instructions">Make sure the entire image is visible in your camera view.</p>
-        <button id="start-button">Start AR Experience</button>
+        <div id="content-container">
+            <h1>AR Experience of a Patient-Created Superhero of Medication Lived Experience</h1>
+            <p class="instructions">Point your camera at the Superhero Character Image to see it come to life!</p>
+            <p class="instructions">Make sure the entire image is visible in your camera view.</p>
+            <button id="start-button">Start AR Experience</button>
+        </div>
     </div>
 
     <!-- AR scene container -->
     <div class="example-container">
         <a-scene 
-            mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: true;" 
+            mindar-image="imageTargetSrc: ./MAGIC-Equilibrium-Targets.mind; autoStart: false; uiScanning: true;" 
             embedded 
             color-space="sRGB" 
             renderer="colorManagement: true, physicallyCorrectLights" 
@@ -73,7 +114,7 @@
             device-orientation-permission-ui="enabled: false"
         >
             <a-assets>
-                <video id="ar-video" src="./your-video.mp4" preload="auto" loop playsinline crossorigin="anonymous"></video>
+                <video id="ar-video" src="./MAGIC-Video_Equilibrium.mp4" preload="auto" loop playsinline crossorigin="anonymous"></video>
             </a-assets>
 
             <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
